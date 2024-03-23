@@ -1,0 +1,20 @@
+Package: codeAnalyseR
+Title: Creation of NEWS.md File
+Version: 0.1.0
+Authors@R: person('Jakob', 'Gepp',email = 'jakob.gepp@yahoo.de',role = c('cre', 'aut'))
+Description: Analyse your custom R scripts.
+License: MIT + file LICENSE
+URL: {{ URL }}
+BugReports: {{ BugReports }}
+Encoding: UTF-8
+Depends: 
+    R (>= 4.2.1)
+Suggests: 
+    desc,
+    newsmd,
+    origin,
+    roxygen2,
+    testthat,
+    usethis
+Date: 2024-02-23
+RoxygenNote: 7.3.1
