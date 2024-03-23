@@ -81,7 +81,7 @@ my_news$write(file = "NEWS.md")
 my_readme <- readLines("README.md")
 my_readme[1] <- paste0(
   "# codeAnalyseR - ", my_desc$get_version(),
-  " <img src=\"misc/news.png\" width=170 align=\"right\" />")
+  " <img src=\"misc/logo.png\" width=170 align=\"right\" />")
 
 writeLines(my_readme, "README.md")
 

@@ -1,4 +1,4 @@
-# codeAnalyseR - 0.1.0 <img src="misc/news.png" width=170 align="right" />
+# codeAnalyseR - 0.1.0 <img src="misc/logo.png" width=170 align="right" />
 
 
 ----
