@@ -14,10 +14,11 @@
 plot_renv_dep <- function(
     lockfile = "renv.lock",
     dep_level = 2) {
-  # libraries
 
   # lockfile <- "renv.lock"
   # lockfile <- "../flowchart/renv.lock"
+
+# input checks ------------------------------------------------------------
 
   if (!file.exists(lockfile)) {
     stop(paste0("lockfile: '", lockfile, "' not found!"))
@@ -27,6 +28,9 @@ plot_renv_dep <- function(
     stop(paste0("lockfile is not a 'renv.lock' file!"))
   }
 
+
+
+# load renv file and dependencies -----------------------------------------
 
   renv_pkgs <- renv::lockfile_read(file = lockfile)
   # get direct dependencies in folder with renv.lock file
@@ -41,37 +45,9 @@ plot_renv_dep <- function(
             "'", paste0(missing_pkgs, collapse = "', '"), "'")
   }
 
-  extract_pkg_info <- function(pkg) {
-    #pkg <- renv_pkgs$Packages[[1]]
-    deps <- pkg$Requirements
-    this_source <- ifelse(pkg$Source == "Repository",
-                          pkg$Repository,
-                          pkg$Source
-    )
-
-    if (length(deps) == 0) {
-      out <- data.frame()
-    } else {
-      out <- data.frame(
-        pkg = pkg$Package,
-        dep = deps,
-        source = this_source,
-        stringsAsFactors = FALSE
-      )
-
-    }
-    return(out)
-  }
-
   pkg_list <- lapply(renv_pkgs$Packages, extract_pkg_info)
 
   pkg_dt <- data.table::rbindlist(pkg_list)
-
-  #pkg_dt[, num_deps := .N, by = pkg]
-
-  # pkg_dt[, top_pkg := !(pkg %in% dep)]
-  # keep all deps and pkgs
-  #pkg_dt <- pkg_dt[!(dep == "R" & top_pkg == FALSE),]
 
   nodes_dt <- data.table::data.table(
     id = seq_len(data.table::uniqueN(c(pkg_dt$pkg, pkg_dt$dep))),
@@ -119,12 +95,6 @@ plot_renv_dep <- function(
   nodes_dt$source[!is.na(pkg_idx)] <-
     pkg_dt_tmp$source[c(na.omit(pkg_idx))]
 
-
-  edges <- unique(data.frame(
-    "to" = nodes_dt$id[match(pkg_dt$dep, nodes_dt$name)],
-    "from" = nodes_dt$id[match(pkg_dt$pkg, nodes_dt$name)]
-  ))
-
   links <- unique(data.frame(
     "source" = nodes_dt$name[match(pkg_dt$pkg, nodes_dt$name)],
     "target" = nodes_dt$name[match(pkg_dt$dep, nodes_dt$name)],
@@ -133,20 +103,8 @@ plot_renv_dep <- function(
     "value" = 1
   ))
 
-
-  # edges <- edges[edges$to != r_node & edges$from != r_node, ]
-  edges <- edges[!is.na(edges$to) & !is.na(edges$from), ]
   links <- links[!is.na(links$target) & !is.na(links$source), ]
 
-
-  edge_types <- data.table::fifelse(
-    test = edges$to %in% nodes_dt[type == "leaf", id],
-    yes = "leaf",
-    no = "node")
-  edge_types <- data.table::fifelse(
-    test = edges$to %in% nodes_dt[type == "start", id],
-    yes = "start",
-    no = edge_types)
 
   # adjsut names to contain number of deps
   nodes_dt$pkg <- nodes_dt$name
@@ -163,20 +121,6 @@ plot_renv_dep <- function(
     )
   )
 
-
-  # Create a graph object
-  # mygraph <- igraph::graph_from_data_frame(
-  #   d = edges,
-  #   directed = TRUE,
-  #   vertices = nodes_dt
-  # ) |>
-  #   igraph::set_edge_attr(
-  #     name = "edge_color",
-  #     value = edge_types) |>
-  #   igraph::set_vertex_attr(
-  #     name = "node_source",
-  #     value = nodes_dt$source)
-
   used_colors_nodes <- c(
     "leaf" = "red",
     "node" = "darkgreen",
@@ -184,31 +128,6 @@ plot_renv_dep <- function(
 
   used_colors_source <- rainbow(data.table::uniqueN(nodes_dt$source))
   names(used_colors_source) <- unique(nodes_dt$source)
-
-
-  # # Basic tree
-  # ggraph(mygraph, layout = 'dendrogram', circular = FALSE) +
-  #   geom_edge_diagonal() +
-  #   geom_node_point()
-
-  # out <- ggraph::ggraph(mygraph, layout = 'auto', circular = FALSE) +
-  #   ggraph::geom_edge_link(
-  #     # ggplot2::aes(color = edge_color)) +
-  #     ggplot2::aes(color = "black")) +
-  #   # ggraph::geom_node_point(aes(color = node_source), size = 4) +
-  #   ggraph::geom_node_label(
-  #     ggplot2::aes(label = name, fill = source),
-  #     color = "white",
-  #     repel = TRUE,
-  #     max.overlaps = Inf) +
-  #   # ggraph::scale_edge_colour_manual(values = used_colors_nodes) +
-  #   # ggplot2::scale_color_manual(values = used_colors_nodes) +
-  #   # ggplot2::scale_color_manual(values = used_colors_source) +
-  #   # ggplot2::scale_fill_manual(values = used_colors_nodes) +
-  #   ggplot2::scale_fill_manual(values = used_colors_source) +
-  #   ggplot2::ggtitle(paste0("Packagename (dependencies | imports) for: ", lockfile))
-
-
 
   # sankey plot -------------------------------------------------------------
 
@@ -243,13 +162,13 @@ plot_renv_dep <- function(
       'var svg = d3.select("svg")',
       paste0(
         'svg.append("circle").attr("cx",0).attr("cy", ',
-        seq_along(used_colors_source)*15,
+        seq_along(used_colors_source) * 15,
         ').',
         'attr("r", 6).style("fill", "',
         used_colors_source,'")', collapse = "\n"),
       paste0(
         'svg.append("text").attr("x", 10).attr("y", ',
-        seq_along(used_colors_source)*15,
+        seq_along(used_colors_source) * 15,
         ').text("',
         names(used_colors_source),'").style("font-size", "10px").',
         'attr("alignment-baseline","middle")', collapse = "\n"),
@@ -259,8 +178,9 @@ plot_renv_dep <- function(
     )
 
   # cat(JS)
-  p <- htmlwidgets::onRender(p,JS)
+  p <- htmlwidgets::onRender(p, JS)
 
   return(p)
 
 }
+

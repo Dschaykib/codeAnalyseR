@@ -5,8 +5,9 @@
 
 ### update tests and plots
 
-- add tests for findredundance and get_network
+- add tests for findredundance and plot_renv_dep
 - change from ggraph to network3D plots
+- add internal extract_pkg_info
 
 
 ## version 0.0.0.9001

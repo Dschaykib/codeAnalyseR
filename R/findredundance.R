@@ -81,9 +81,11 @@ findredundance <- function(
         "down to", min_chunk, "\n")
   }
 
-  chunk_vector <- ifelse(chunk_size > 0,
-                         rev(seq_len(chunk_size)),
-                         NA_integer_)
+  chunk_vector <- if (chunk_size > 0 && chunk_size >= min_chunk) {
+    seq(from = chunk_size, to = min_chunk)
+  } else {
+    NA_integer_
+  }
 
   # define output table
   res_df <- data.frame(

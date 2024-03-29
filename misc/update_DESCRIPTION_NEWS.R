@@ -65,13 +65,17 @@ my_desc$bump_version("dev")
 my_news$add_version(my_desc$get_version())
 
 my_news$add_subtitle("update tests and plots")
-my_news$add_bullet(c("add tests for findredundance and get_network",
-                     "change from ggraph to network3D plots"))
+my_news$add_bullet(c("add tests for findredundance and plot_renv_dep",
+                     "change from ggraph to network3D plots",
+                     "add internal extract_pkg_info"))
 
 # add dependencies
 my_desc$set_dep("data.table", type = desc::dep_types[1])
 my_desc$set_dep("networkD3", type = desc::dep_types[1])
 my_desc$set_dep("htmlwidgets", type = desc::dep_types[1])
+
+
+
 
 
 # WIP ---------------------------------------------------------------------
