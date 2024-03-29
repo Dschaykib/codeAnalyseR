@@ -48,19 +48,30 @@ my_desc$set_dep("roxygen2", type = desc::dep_types[3], version = "*")
 my_desc$set_dep("usethis", type = desc::dep_types[3], version = "*")
 my_desc$set_dep("devtools", type = desc::dep_types[3], version = "*")
 
-# set dependencies
-# my_desc$set_dep("R6", type = desc::dep_types[1])
-
 
 
 # initial functions -------------------------------------------------------
 
-my_desc$bump_version("minor")
+my_desc$bump_version("dev")
 my_news$add_version(my_desc$get_version())
 
 my_news$add_subtitle("Initial function setup")
 my_news$add_bullet(c("add findredundance and get_network",
                      "setup package"))
+
+# testing and plots -------------------------------------------------------
+
+my_desc$bump_version("dev")
+my_news$add_version(my_desc$get_version())
+
+my_news$add_subtitle("update tests and plots")
+my_news$add_bullet(c("add tests for findredundance and get_network",
+                     "change from ggraph to network3D plots"))
+
+# add dependencies
+my_desc$set_dep("data.table", type = desc::dep_types[1])
+my_desc$set_dep("networkD3", type = desc::dep_types[1])
+my_desc$set_dep("htmlwidgets", type = desc::dep_types[1])
 
 
 # WIP ---------------------------------------------------------------------

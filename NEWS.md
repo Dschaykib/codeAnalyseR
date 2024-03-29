@@ -1,4 +1,15 @@
-## version 0.1.0
+## version 0.0.0.9002
+
+---
+
+
+### update tests and plots
+
+- add tests for findredundance and get_network
+- change from ggraph to network3D plots
+
+
+## version 0.0.0.9001
 
 ---
 
