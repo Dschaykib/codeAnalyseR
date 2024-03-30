@@ -45,12 +45,12 @@ At the moment there are the following functions to use:
   This functions checks the provided code for duplicated rows and states how many percent of the code could be reduced.
   
   ```
-     chunk_size found max_dups total_dups      rest
-  2          10     1        2          2 0.9805637
-  5           7     1        3          3 0.9601555
-  8           4     1        2          2 0.9533528
-  9           3     3        2          6 0.9358601
-  10          2     9        5         26 0.8853256
+  chunk_size found max_dups total_dups      rest
+          10     1        2          2 0.9805637
+           7     1        3          3 0.9601555
+           4     1        2          2 0.9533528
+           3     3        2          6 0.9358601
+           2     9        5         26 0.8853256
   ```
 
 
