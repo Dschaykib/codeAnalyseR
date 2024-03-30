@@ -1,14 +1,14 @@
 testthat::context("check get_network.R")
 
-testthat::skip("not yet adjsuted")
+# testthat::skip("not yet adjsuted")
 
 # error -------------------------------------------------------------------
 
 testthat::test_that("path and files exists", {
   testthat::expect_error(get_network(dir = "/this/does/not/exists"),
-               "/this/does/not/exists does not exists")
+               "'/this/does/not/exists' does not exists")
   testthat::expect_error(get_network(dir = ".", pattern = "notexistingpattern"),
-               "no files with the given pattern")
+               "no files with the given pattern: 'notexistingpattern'")
 })
 
 
@@ -40,7 +40,7 @@ testthat::test_that("example script works", {
 
   test <- get_network(all_scripts = test_scripts)
 
-  # functions then subfunctions
+  # functions then sub functions
   res_names <- c("foo_01", "foo_04", "foo_05", "foo_02", "foo_03")
   res_matrix <- matrix(c(1, 1, 0, 1, 0,
                          0, 0, 0, 0, 0,
@@ -72,34 +72,50 @@ testthat::test_that("example script works", {
 
 })
 
-testthat::test_that("special cases work", {
+testthat::test_that("empty scripts work", {
 
-  # empty scripts
   test_scripts <- list(
     foo_01 = c("foo_01 <- function(){}"),
     foo_02 = c("# no function"),
-    foo_03 = c("  ")
+    foo_03 = c("  "),
+    foo_04 = c("foo_01()")
   )
   testthat::expect_warning(get_network(all_scripts = test_scripts),
-                           "removing empty scritps: foo_02, foo_03")
+                           "removing empty scritps: 'foo_02', 'foo_03'")
+})
 
-  # no functions
+testthat::test_that("no relations work", {
+
+  test_scripts <- list(
+    foo_01 = c("foo_01 <- function(){}")
+  )
+  testthat::expect_warning(get_network(all_scripts = test_scripts),
+                           "No relations could be found!")
+
+})
+
+testthat::test_that("no functions work", {
+
   test_scripts <- list(
     foo_01 = c("print(\"over 100\")"),
     foo_02 = c("print(x)")
   )
-  testthat::expect_warning(test <- get_network(all_scripts = test_scripts),
-                 "no functions found")
+  testthat::expect_warning(
+    test <- get_network(all_scripts = test_scripts),
+    "no functions found")
 
   res <- list(matrix = NULL, igraph = NULL)
   testthat::expect_equal(res, test)
 
-  # comments and function order
+})
+
+testthat::test_that("comments and function order", {
+
   test_scripts <- list(foo_01 = c("foo_01<-function(x){#print(x)}"),
                        foo_02 = c("foo_02<-function(x){",
                                   "#foo_01(x)",
                                   "}"))
-  test <- get_network(all_scripts = test_scripts)
+  test <- suppressWarnings(get_network(all_scripts = test_scripts))
 
   res_names <- c("foo_01", "foo_02")
   res_matrix <- matrix(c(0, 0, 0, 0), ncol = 2,

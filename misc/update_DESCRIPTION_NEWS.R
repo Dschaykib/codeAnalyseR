@@ -77,6 +77,15 @@ my_desc$set_dep("htmlwidgets", type = desc::dep_types[1])
 
 
 
+# including get_network ---------------------------------------------------
+
+my_desc$bump_version("dev")
+my_news$add_version(my_desc$get_version())
+
+my_news$add_bullet(c("adjust get_network tests",
+                     "add internal strsplit function"))
+
+
 
 # WIP ---------------------------------------------------------------------
 
@@ -99,6 +108,9 @@ my_readme[1] <- paste0(
   " <img src=\"misc/logo.png\" width=170 align=\"right\" />")
 
 writeLines(my_readme, "README.md")
+
+
+# manual checks -----------------------------------------------------------
 
 # update renv packages if needed
 renv::clean()

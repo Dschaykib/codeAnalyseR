@@ -1,3 +1,10 @@
+## version 0.0.0.9003
+
+---
+
+- adjust get_network tests
+- add internal strsplit function
+
 ## version 0.0.0.9002
 
 ---

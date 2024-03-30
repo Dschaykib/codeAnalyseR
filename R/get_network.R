@@ -21,10 +21,12 @@
 #' @param verbose a boolean setting the debugging prints.
 #'
 #' @return
-#'   Returns an object with the adjacency matrix \code{$matrix},
-#'   an igraph object \code{$igraph}, a table for the edges \code{$edge_dt},
-#'   a table for the nodes \code{$node_dt} and
-#'   a networkD3 plot \code{$networkD3}.
+#'   Returns an object with:
+#'   * the adjacency matrix \code{$matrix}
+#'   * an igraph object \code{$igraph}
+#'   * a table for the edges \code{$edge_dt}
+#'   * a table for the nodes \code{$node_dt} and
+#'   * a networkD3 plot \code{$networkD3}.
 #'
 #' @seealso For more information check out
 #' \href{https://www.statworx.com/de/blog/flowcharts-of-functions/}{our blog}.
@@ -36,8 +38,6 @@
 #'
 #' @note
 #' TODO: list with exclude files and comments ' ' in one line
-#'
-#' TODO: maybe return plot
 #'
 #'
 #' @examples
@@ -62,7 +62,7 @@ get_network <- function(dir = NULL,
 
   # check if dir exists
   if (!is.null(dir) && all(!dir.exists(dir))) {
-    stop(paste0(dir, " does not exists"))
+    stop(paste0("'", dir, "' does not exists"))
   }
 
   if (is.null(all_scripts)) {
@@ -83,7 +83,9 @@ get_network <- function(dir = NULL,
     }
 
     if (length(files_path) == 0) {
-      stop("no files with the given pattern")
+      stop("no files with the given pattern: '",
+           paste0(pattern, collapse = "', '"),
+           "'")
     }
 
     common_base_path <- function(paths) {
@@ -135,8 +137,9 @@ get_network <- function(dir = NULL,
   # check for empty scripts
   indx <- sapply(all_scripts, length) == 0
   if (any(indx)) {
-    warning(paste0("removing empty scritps: ",
-                   paste0(names(all_scripts)[indx], collapse = ", ")))
+    warning(paste0("removing empty scritps: '",
+                   paste0(names(all_scripts)[indx], collapse = "', '"),
+                   "'"))
     all_scripts <- all_scripts[!indx]
     folder <- folder[!indx]
   }
@@ -172,8 +175,9 @@ get_network <- function(dir = NULL,
   # check for empty scripts
   indx <- sapply(all_scripts, length) == 0
   if (any(indx)) {
-    warning(paste0("removing empty scritps: ",
-                   paste0(names(all_scripts)[indx], collapse = ", ")))
+    warning(paste0("removing empty scritps: '",
+                   paste0(names(all_scripts)[indx], collapse = "', '"),
+                   "'"))
     all_scripts <- all_scripts[!indx]
     folder <- folder[!indx]
   }
@@ -197,8 +201,9 @@ get_network <- function(dir = NULL,
   # check for empty scripts
   indx <- sapply(all_scripts, length) == 0
   if (any(indx)) {
-    warning(paste0("removing empty scritps: ",
-                   paste0(names(all_scripts)[indx], collapse = ", ")))
+    warning(paste0("removing empty scritps: '",
+                   paste0(names(all_scripts)[indx], collapse = "', '"),
+                   "'"))
     all_scripts <- all_scripts[!indx]
     folder <- folder[!indx]
   }
@@ -484,8 +489,9 @@ get_network <- function(dir = NULL,
   # remove duplicated names
   dub_rows <- !duplicated(names(clean_functions))
   if (!all(dub_rows)) {
-    warning(paste0("removing duplicates: ",
-                   paste0(names(clean_functions)[!dub_rows], collapse = ", ")))
+    warning(paste0("removing duplicates: '",
+                   paste0(names(clean_functions)[!dub_rows], collapse = "', '"),
+                   "'"))
     clean_functions <- clean_functions[dub_rows]
     lines <- lines[dub_rows]
     all_folder <- all_folder[dub_rows]
@@ -607,7 +613,7 @@ get_network <- function(dir = NULL,
     stringsAsFactors = FALSE)
 
 if (nrow(edge_dt) == 0 || nrow(node_dt) == 0) {
-  print("No relations could be found!")
+  warning("No relations could be found!")
   net_plot <- NULL
 } else {
   net_plot <- networkD3::forceNetwork(
