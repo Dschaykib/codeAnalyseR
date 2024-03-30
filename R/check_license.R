@@ -4,9 +4,6 @@ check_license <- function() {
 
   # use renv to get current packages
 
-  # renv::restore()
-
-
   # all_packages from other function for now
   all_packages
 
@@ -17,7 +14,6 @@ check_license <- function() {
         tryCatch(
           expr = {
             packageDescription(pkg, fields="License")
-
           },
           error = function(e) e
         )

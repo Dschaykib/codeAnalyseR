@@ -3,7 +3,8 @@
 #' @param dir a folder path, which should be checked
 #' @param script a character vector with script inputs
 #' @param min_chunk an integer with the minimum chunk size to be tested
-#' @param exclude a vector with regex patterns, that should be ignored when reading in `dir`
+#' @param exclude a vector with regex patterns, that should be ignored when
+#'   reading in `dir`
 #' @param verbose a boolean setting the debugging prints.
 #'
 #' @return a data.frame with the summary of repeatable chunks
@@ -14,14 +15,14 @@ findredundance <- function(
     script = NULL,
     min_chunk = 2,
     exclude = c("/renv/"),
-    verbose = FALSE
-) {
+    verbose = FALSE){
 
   # TODO add input checks
   # TODO adding scripts
 
   # get all files
-  all_files <- c()
+  all_files <- c(
+  )
 
   if (!is.null(dir)) {
     all_files <- list.files(
@@ -42,7 +43,7 @@ findredundance <- function(
 
 
 
-  if (!is.null(script) ) {
+  if (!is.null(script)) {
     all_lines_raw <- c(all_lines_raw, script)
   }
 
@@ -60,7 +61,7 @@ findredundance <- function(
   all_lines <- clean_lines(all_lines_raw = all_lines_raw)
 
   # Set the chunk size you want to check for duplicates
-  # chunk_size <- 5  # For example, a chunk size of 3 lines
+  # For example, a chunk size of 3 lines: chunk_size <- 3
 
   chunk_size <- min(
     # max the half can be double

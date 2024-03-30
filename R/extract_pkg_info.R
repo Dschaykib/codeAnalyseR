@@ -6,7 +6,7 @@
 #' It should contain:
 #'
 #' * Package: the package name
-#' * Source: where the packages was sourced, this needs the additional info from the repository entry
+#' * Source: where the packages was sourced, in combination with repository
 #' * Repository: additional info about the package source
 #' * Requirements: the dependencies of the package
 #'
@@ -26,11 +26,11 @@
 #'
 extract_pkg_info <- function(pkg) {
 
-  #pkg <- renv_pkgs$Packages[[1]]
   deps <- pkg$Requirements
-  this_source <- ifelse(pkg$Source == "Repository",
-                        pkg$Repository,
-                        pkg$Source
+  this_source <- ifelse(
+    pkg$Source == "Repository",
+    pkg$Repository,
+    pkg$Source
   )
 
   if (length(deps) == 0) {
