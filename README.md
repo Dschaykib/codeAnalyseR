@@ -34,7 +34,7 @@ I hope you might find some of these helpful. If you have similar functions or ch
 At the moment there are the following functions to use:
 
 ### get_network()
-  This Function plots user defined functions and shows how they are connected.
+  This function plots user defined functions and shows how they are connected.
   <img src="misc/example-get_network.png" align="center" />
   
 ### plot_renv_dep()
