@@ -34,14 +34,14 @@ extract_pkg_info <- function(pkg) {
   )
 
   if (length(deps) == 0) {
-    out <- data.frame()
-  } else {
+    deps <- "no dependency found"
+  }
     out <- data.frame(
       pkg = pkg$Package,
       dep = deps,
       source = this_source,
       stringsAsFactors = FALSE
     )
-  }
+
   return(out)
 }
