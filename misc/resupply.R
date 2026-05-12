@@ -45,15 +45,19 @@ resupply <- function(lockfile_path = "renv.lock",
 
   # initial run settings
   try <- 0
-  checking <- TRUE
+  final_run <- FALSE
   failed_pkgs <- c()
   changed_pkgs <- c()
 
   # add backup renv file
-  file.copy(from = lockfile_path, to = paste0(lockfile_path, "_backup"), overwrite = TRUE)
+  file.copy(
+    from = lockfile_path,
+    to = paste0(lockfile_path, "_backup_", format(Sys.time(), "%Y%m%d%H%M%S")),
+    overwrite = TRUE
+  )
 
   # loop over renv.lock error
-  while(checking) {
+  while(!final_run) {
     try <- try + 1
     cat(rep("#", 38), "\n")
     cat("renv restore attempt ", try, "\n")
@@ -66,10 +70,12 @@ resupply <- function(lockfile_path = "renv.lock",
       })
     cat(rep("-", 38), "\n")
 
-    if (!"error" %in% class(renv_res)) {
-      checking <- FALSE
-    } else {
+    # if no error, stop loop
+    final_run <- !("error" %in% class(renv_res))
+
+    if (!final_run) {
       log_message <- tail(renv_res$meta$message, 1)
+
       if (is.null(log_message)) {
         log_message <- renv_res
         this_failed_pkg <- sub(".*'([A-Za-z0-9._]+) .*", "\\1", log_message)
@@ -81,6 +87,13 @@ resupply <- function(lockfile_path = "renv.lock",
 
       if (length(this_failed_pkg) == 0) {
         stop("could not identify failed package")
+      }
+
+      if (this_failed_pkg %in% failed_pkgs) {
+        stop(
+          "package '", this_failed_pkg,
+          "' has already been processed. Stopping to avoid infinite loop."
+        )
       }
 
       # remove package from renv.lock file
@@ -144,6 +157,9 @@ resupply <- function(lockfile_path = "renv.lock",
               })
 
               if ("error" %in% class(old_install)) {
+                cat("'", this_failed_pkg,
+                    "' could not be installed in version ",
+                    i_version, "\n")
 
               } else {
                 old_check <- TRUE
